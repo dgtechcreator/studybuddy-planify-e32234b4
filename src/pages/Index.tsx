@@ -8,6 +8,11 @@ import {
   ListChecks, CheckCircle2, Circle, TrendingUp, RotateCcw,
 } from "lucide-react";
 import SubjectProgressChart from "@/components/SubjectProgressChart";
+import CompletionPieChart from "@/components/CompletionPieChart";
+import TopicTypeChart from "@/components/TopicTypeChart";
+import UserCountBadge from "@/components/UserCountBadge";
+import MotivationalQuote from "@/components/MotivationalQuote";
+import AchievementBadges from "@/components/AchievementBadges";
 import TopicTypeFilter from "@/components/TopicTypeFilter";
 import SubjectForm from "@/components/SubjectForm";
 import SubjectChecklist from "@/components/SubjectChecklist";
@@ -17,10 +22,10 @@ import type { Subject } from "@/types/study";
 
 function StatCard({ icon: Icon, value, label }: { icon: any; value: string | number; label: string }) {
   return (
-    <div className="bg-card border border-border rounded-2xl p-5 flex flex-col items-center justify-center shadow-sm">
-      <Icon size={26} className="text-primary mb-2" />
-      <p className="text-3xl font-bold text-foreground">{value}</p>
-      <p className="text-sm text-muted-foreground mt-1">{label}</p>
+    <div className="bg-card border border-border rounded-xl p-3 flex flex-col items-center justify-center shadow-sm hover:shadow-md hover:border-primary/30 transition">
+      <Icon size={18} className="text-primary mb-1" />
+      <p className="text-xl md:text-2xl font-bold text-foreground leading-tight">{value}</p>
+      <p className="text-[11px] md:text-xs text-muted-foreground mt-0.5 text-center">{label}</p>
     </div>
   );
 }
@@ -105,25 +110,27 @@ export default function Index() {
   const HeaderBtn = ({ icon: Icon, label, onClick }: any) => (
     <button
       onClick={onClick}
-      className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-primary-foreground text-sm font-medium backdrop-blur-sm transition"
+      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-primary-foreground text-xs font-medium backdrop-blur-sm transition"
+      title={label}
     >
-      <Icon size={16} /> {label}
+      <Icon size={14} /> <span className="hidden sm:inline">{label}</span>
     </button>
   );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Gradient Header */}
-      <div className="px-4 py-6 text-primary-foreground" style={{ background: "var(--gradient-header)" }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <GraduationCap size={36} />
+      <div className="px-4 py-4 text-primary-foreground" style={{ background: "var(--gradient-header)" }}>
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <GraduationCap size={30} />
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold leading-tight">StudyTracker</h1>
-              <p className="text-sm opacity-90">Track your learning progress</p>
+              <h1 className="text-xl md:text-2xl font-bold leading-tight">StudyTracker</h1>
+              <p className="text-xs opacity-90">Track your learning progress</p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <UserCountBadge />
             <HeaderBtn icon={Download} label="Export" onClick={handleExport} />
             <HeaderBtn icon={RotateCcw} label="Reset" onClick={handleReset} />
             <HeaderBtn icon={Upload} label="Import" onClick={handleImport} />
@@ -132,23 +139,33 @@ export default function Index() {
         </div>
       </div>
 
-      <div className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
-        {/* Stat cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+      <div className="flex-1 max-w-7xl w-full mx-auto p-3 md:p-5 space-y-4">
+        <MotivationalQuote />
+
+        {/* Stat cards — 6 in a row on desktop */}
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
           <StatCard icon={BookOpen} value={filteredSubjects.length} label="Subjects" />
           <StatCard icon={Layers} value={totalChapters} label="Chapters" />
-          <StatCard icon={ListChecks} value={totalTopics} label="Total Topics" />
+          <StatCard icon={ListChecks} value={totalTopics} label="Topics" />
           <StatCard icon={CheckCircle2} value={completedTopics} label="Completed" />
           <StatCard icon={Circle} value={remaining} label="Remaining" />
           <StatCard icon={TrendingUp} value={`${progress}%`} label="Progress" />
         </div>
 
-        <TopicTypeFilter filterType={filterType} onFilterChange={setFilterType} />
+        <AchievementBadges completed={completedTopics} progress={progress} />
 
-        <div className="flex justify-end">
+        {/* Charts — side by side on desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <CompletionPieChart completed={completedTopics} remaining={remaining} />
+          <TopicTypeChart subjects={filteredSubjects} />
+          <SubjectProgressChart subjects={filteredSubjects} />
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <TopicTypeFilter filterType={filterType} onFilterChange={setFilterType} />
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 font-medium shadow-sm"
           >
             <Plus size={18} /> Add Subject
           </button>
@@ -161,9 +178,7 @@ export default function Index() {
           />
         )}
 
-        <SubjectProgressChart subjects={filteredSubjects} />
-
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {filteredSubjects.map((subject) => (
             <SubjectChecklist
               key={subject.id}
@@ -174,7 +189,7 @@ export default function Index() {
             />
           ))}
           {filteredSubjects.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">No subjects yet. Add one to get started!</p>
+            <p className="col-span-full text-center text-muted-foreground py-8">No subjects yet. Add one to get started!</p>
           )}
         </div>
 
