@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_total_users_count() TO authenticated;
