@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.get_total_users_count() FROM PUBLIC, anon, authenticated;

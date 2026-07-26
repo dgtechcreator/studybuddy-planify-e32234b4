@@ -7,8 +7,8 @@ export default function UserCountBadge() {
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    (supabase.rpc as any)("get_total_users_count").then(({ data }: any) => {
-      if (typeof data === "number") setCount(data);
+    supabase.functions.invoke("get-user-count").then(({ data }: any) => {
+      if (data && typeof data.count === "number") setCount(data.count);
     });
   }, []);
 
