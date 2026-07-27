@@ -11,6 +11,7 @@ import SubjectProgressChart from "@/components/SubjectProgressChart";
 import CompletionPieChart from "@/components/CompletionPieChart";
 import TopicTypeChart from "@/components/TopicTypeChart";
 import UserCountBadge from "@/components/UserCountBadge";
+import InstallAppButton from "@/components/InstallAppButton";
 import MotivationalQuote from "@/components/MotivationalQuote";
 import AchievementBadges from "@/components/AchievementBadges";
 import TopicTypeFilter from "@/components/TopicTypeFilter";
@@ -131,6 +132,7 @@ export default function Index() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <UserCountBadge />
+            <InstallAppButton />
             <HeaderBtn icon={Download} label="Export" onClick={handleExport} />
             <HeaderBtn icon={RotateCcw} label="Reset" onClick={handleReset} />
             <HeaderBtn icon={Upload} label="Import" onClick={handleImport} />
